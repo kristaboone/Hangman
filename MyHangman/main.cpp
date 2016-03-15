@@ -7,6 +7,8 @@ int main( ) {
 	Game myGame;
 	myGame.run();
 
-	std::cout << "Press enter to continue . . . " << std::endl;
+	std::cout << "Press enter to continue . . ." << std::endl;
 	std::cin.get();
+
+	return 0;
 }
