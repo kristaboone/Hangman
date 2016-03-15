@@ -128,6 +128,7 @@ void Game::exit( ) {
 				word << ". Better luck next time..." << std::endl;
 	}
 	std::cout << "Thanks for playing!" << std::endl;
+	std::cin.ignore();
 }
 
 // Combined effort of KV and DB
