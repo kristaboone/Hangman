@@ -17,7 +17,8 @@ void Game::run() {
 	std::cin >> word;
 	std::string thisGuess( word.size(), '_' );
 	guess = thisGuess;
-	
+	std::system("cls");
+
 	while( 1 ) {
 		bool found = false;
 
