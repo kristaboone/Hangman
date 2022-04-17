@@ -11,12 +11,21 @@ Game::Game() : count( 0 ), gameOver( false ), hasWon( false ) {}
 void Game::run() {
 	// Output welcome message
 	std::cout << "Hello! Welcome to hangman.\n"  <<
-		"Player one, please enter a word!\n"<< std::endl;
+		"Player one, please enter a word or phrase!\n"<< std::endl;
 
-	// Get word
-	std::cin >> word;
-	std::string thisGuess( word.size(), '_' );
-	guess = thisGuess;
+	// Get word or phrase
+	std::getline(std::cin, wordOrPhrase);
+	wordOrPhraseLower = wordOrPhrase;
+
+	// Convert to lowercase
+	std::transform(
+		wordOrPhrase.begin(),
+		wordOrPhrase.end(),
+		wordOrPhraseLower.begin(),
+		[](unsigned char c) { return std::tolower(c); }
+	);
+
+	guess = setupInitialGuess(wordOrPhraseLower);
 	std::system("cls");
 
 	while( 1 ) {
@@ -29,14 +38,14 @@ void Game::run() {
 
 			if( !has_guessed( tmp ) ){
 				guesses.push_back( tmp );
-				break;						
+				break;		
 			}
 			std::system("cls");
 			std::cout << "You've already guessed " << tmp << "! " << std::endl;
 		}
 
 		// Find position of character in word
-		int pos = word.find( tmp );
+		int pos = wordOrPhraseLower.find( tmp );
 		
 		// If char in word, replace all instances
 		if( pos != std::string::npos ) {
@@ -46,7 +55,7 @@ void Game::run() {
 
 		// Player has won if word = guess
 		// Update players
-		hasWon = ( word == guess );
+		hasWon = ( wordOrPhrase == guess );
 		update( found );
 
 		// If game over, exit
@@ -64,16 +73,19 @@ char Game::getLetter( ) {
 	char letter;
 	std::cin >> letter;
 
-	return letter;
+	return std::tolower(letter);
 }
 
 // Updates guess by replacing sybol with a correctly guessed character
 void Game::replace( char l ) {
-	for ( size_t i = 0; i < word.size(); i++ ) {
-		if( word.at(i) == l ) {
-			guess[i] = l;	
+	for ( size_t i = 0; i < wordOrPhraseLower.size(); i++ ) {
+		if( wordOrPhrase.at(i) == l ) {
+			guess[i] = l;
 		}
-	}			
+		else if(wordOrPhraseLower.at(i) == l ) {
+			guess[i] = toupper(l);
+		}
+	}
 }
 
 // Returns true if player has already guessed a character
@@ -125,7 +137,7 @@ void Game::exit( ) {
 	}
 	else {
 		std::cout << "You lost! The word was " << 
-				word << ". Better luck next time..." << std::endl;
+				wordOrPhraseLower << ". Better luck next time..." << std::endl;
 	}
 	std::cout << "Thanks for playing!" << std::endl;
 	std::cin.ignore();
@@ -231,4 +243,26 @@ void Game::draw( ) {
 	printAscii( "_|_____________" );
 	printAscii( "|             |" );
 	printAscii( "|_____________|\n" );
+}
+
+std::string Game::setupInitialGuess(const std::string& aInputWordOrPhrase) const
+{
+	std::string thisGuess(aInputWordOrPhrase.size(), '_');
+
+	for (size_t i = 0; i < aInputWordOrPhrase.size(); ++i)
+	{
+		const char tmpChar = aInputWordOrPhrase.at(i);
+		switch (tmpChar)
+		{
+		case ' ':
+		case '.':
+		case ',':
+		case ';':
+		case '!':
+		case '?':
+			thisGuess.at(i) = tmpChar;
+		}
+	}
+
+	return thisGuess;
 }

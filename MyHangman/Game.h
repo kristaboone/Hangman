@@ -12,7 +12,8 @@ private:
 	bool gameOver;
 	bool hasWon;
 	int count;
-	std::string word;
+	std::string wordOrPhraseLower;
+	std::string wordOrPhrase;
 	std::string guess;
 	std::vector< char > guesses;
 	
@@ -23,4 +24,5 @@ private:
 	void replace(char l);
 	void update(bool found);
 	void exit();
+	std::string setupInitialGuess(const std::string& aInputWordOrPhrase) const;
 };
